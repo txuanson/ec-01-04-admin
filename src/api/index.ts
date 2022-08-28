@@ -61,6 +61,10 @@ export class Api {
     return this.client.patch(url, data);
   }
 
+  async delete(url: string): Promise<any> {
+    return this.client.delete(url);
+  }
+
   async login(data: { mEmail: string, mPassword: string }): Promise<any> {
     return this.client.post("/login", data);
   }
@@ -79,6 +83,14 @@ export class Api {
 
   async getCategory(id: number): Promise<any> {
     return this.client.get(`/category/${id}`);
+  }
+
+  async addCategory(data: any): Promise<any> {
+    return this.client.post("/category", data);
+  }
+
+  async deleteCategory(id: number): Promise<any> {
+    return this.client.delete(`/category/${id}`);
   }
 
   async editCategory(id: number, data: any): Promise<any> {

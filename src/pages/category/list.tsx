@@ -1,5 +1,5 @@
 import { CarryOutOutlined, FormOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Col, Form, Input, Row, Space, Tree } from "antd"
+import { Breadcrumb, Button, Col, Form, Input, message, Modal, Row, Space, Tree } from "antd"
 import type { DataNode } from "antd/es/tree";
 import { useEffect, useState } from "react"
 import ReactQuill from "react-quill";
@@ -73,13 +73,47 @@ export const ListCategory: React.FC = () => {
     await loadCategory(selectedKeys[0] as number);
   };
 
-  const editCategory = async (values: any) => {
-    form.resetFields();
+  const onFinish = async (values: any) => {
+    const hide = message.loading('Processing...');
     if (selectedCategory) {
-      await Api.getInstance().editCategory(selectedCategory, values);
+      await Api.getInstance().editCategory(selectedCategory, { ...values });
+    } else {
+      await Api.getInstance().addCategory({ ...values, mParentCategoryId: null });
+      form.resetFields();
     }
+    hide();
+    message.success('Success!', 1);
+    await loadCategoryTree();
   }
 
+  const addChild = async () => {
+    if (!selectedCategory) {
+      return message.error('Please select a category');
+    }
+    const hide = message.loading('Processing...');
+    const fields = form.getFieldsValue();
+    await Api.getInstance().addCategory({ ...fields, mParentCategoryId: selectedCategory });
+    hide();
+    message.success('Success!', 1);
+    await loadCategoryTree();
+  }
+
+  const remove = async () => {
+    if (!selectedCategory) {
+      return message.error('Please select a category');
+    }
+    Modal.confirm({
+      title: 'Are you sure delete this category?',
+      content: 'This action cannot be undone',
+      onOk: async () => {
+        const hide = message.loading('Processing...');
+        await Api.getInstance().deleteCategory(selectedCategory);
+        hide();
+        message.success('Category deleted!', 1);
+        await loadCategoryTree();
+      }
+    })
+  }
 
   return (
     <>
@@ -113,6 +147,7 @@ export const ListCategory: React.FC = () => {
               labelCol={{ span: 2 }}
               wrapperCol={{ span: 22 }}
               name="category"
+              onFinish={onFinish}
             >
               <Form.Item
                 label="Name"
@@ -133,9 +168,16 @@ export const ListCategory: React.FC = () => {
               <Form.Item wrapperCol={{ offset: 2, span: 22 }}>
                 <Space>
                   <Button type="primary" htmlType="submit" >
-                  {selectedCategory ? "Edit" : "Create"}
+                    {selectedCategory ? "Edit" : "Create"}
                   </Button>
-                  {!selectedCategory || <Button>Add child</Button>}
+                  {
+                    !selectedCategory
+                    ||
+                    <>
+                      <Button onClick={addChild}>Add child</Button>
+                      <Button danger type="primary" onClick={remove}>Delete</Button>
+                    </>
+                  }
                 </Space>
               </Form.Item>
             </Form>
