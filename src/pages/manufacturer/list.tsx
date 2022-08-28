@@ -5,14 +5,14 @@ import { Api } from '../../api'
 
 const columns = [
   {
-    title: 'Contry',
-    dataIndex: 'mCountry',
-    key: 'contry',
+    title: 'Name',
+    dataIndex: 'mName',
+    key: 'name',
   },
   {
-    title: 'Flag',
-    dataIndex: 'mFlag',
-    key: 'flag',
+    title: 'Logo',
+    dataIndex: 'mLogo',
+    key: 'logo',
   },
   {
     title: 'Slug',
@@ -29,17 +29,18 @@ const columns = [
   }
 ]
 
-export const ListOrigin = () => {
-  const [dataSource, setDataSource] = React.useState<any[]>([]);
+export const ListManufacturer: React.FC = () => {
+  const [dataSource, setDataSource] = React.useState<any[]>([])
 
-  const loadListOrigin = async () => {
-    const { data } = await Api.getInstance().getListOrigin();
+  const loadListManufacturer = async () => {
+    const { data } = await Api.getInstance().getListManufacturer();
     console.log('data: ', data);
+
     setDataSource(data);
-  }
+  };
 
   useEffect(() => {
-    loadListOrigin();
+    loadListManufacturer();
   }, [])
 
   return (
@@ -48,7 +49,7 @@ export const ListOrigin = () => {
         <Breadcrumb.Item>
           <NavLink to='/'>Home</NavLink>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>Origin</Breadcrumb.Item>
+        <Breadcrumb.Item>Manufacturer</Breadcrumb.Item>
       </Breadcrumb>
       <Button className="float-right mb-3">Add New</Button>
       <Table className="clear-both" columns={columns} dataSource={dataSource} pagination={{ pageSize: 10 }} />

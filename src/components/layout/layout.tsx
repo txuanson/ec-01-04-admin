@@ -2,8 +2,11 @@ import { ApartmentOutlined, AppstoreOutlined, GlobalOutlined, SettingOutlined, U
 import { Layout, Menu, MenuProps } from "antd";
 import React, { useState } from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
+import { CreateAdmin } from "../../pages/admin";
 import { ListCategory } from "../../pages/category";
+import { ListManufacturer } from "../../pages/manufacturer";
 import { ListOrigin } from "../../pages/origin";
+import { ListProduct } from "../../pages/product";
 import { ListUser } from "../../pages/user";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -49,6 +52,9 @@ export const LayoutWrapper: React.FC = ({ }) => {
           <Route path="/origin" element={<ListOrigin />} />
           <Route path="/user" element={<ListUser />} />
           <Route path="/category" element={<ListCategory />} />
+          <Route path="/manufacturer" element={<ListManufacturer />} />
+          <Route path="/product" element={<ListProduct />} />
+          <Route path="/admin" element={<CreateAdmin />} />
         </Routes>
       </Content>
       <Footer className="text-center">EC Admin ©2022 Created by txuanson</Footer>
