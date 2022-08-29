@@ -3,6 +3,7 @@ import axios, { AxiosInstance } from "axios";
 import Cookies from "js-cookie";
 import { useContext } from "react";
 import { AppContext, ContextType } from "../context";
+import { Buffer } from 'buffer';
 
 let instance: Api;
 
@@ -70,40 +71,121 @@ export class Api {
   }
 
   async getListUser(): Promise<any> {
-    return this.client.get("/user");
+    return this.get("/user");
   }
 
   async getListProduct(): Promise<any> {
-    return this.client.get("/product");
+    return this.get("/product");
+  }
+
+  async getProduct(id: number): Promise<any> {
+    return this.get(`/product/${id}`);
+  }
+
+  async addProduct(data: any): Promise<any> {
+    return this.post("/product", data);
+  }
+
+  async editProduct(id: number, data: any): Promise<any> {
+    return this.patch(`/product/${id}`, data);
+  }
+
+  async deleteProduct(id: number): Promise<any> {
+    return this.delete(`/product/${id}`);
+  }
+
+  async getVariant(productId: number, sku: string): Promise<any> {
+    return this.get(`/product/${productId}/variant/${sku}`);
+  }
+
+  async addVariant(productId: number, data: any): Promise<any> {
+    return this.post(`/product/${productId}/variant`, data);
+  }
+
+  async editVariant(productId: number, sku: string, data: any): Promise<any> {
+    return this.patch(`/product/${productId}/variant/${sku}`, data);
+  }
+  
+  async deleteVariant(productId: number, sku: string): Promise<any> {
+    return this.delete(`/product/${productId}/variant/${sku}`);
   }
 
   async getListCategory(): Promise<any> {
-    return this.client.get("/category");
+    return this.get("/category");
   }
 
   async getCategory(id: number): Promise<any> {
-    return this.client.get(`/category/${id}`);
+    return this.get(`/category/${id}`);
   }
 
   async addCategory(data: any): Promise<any> {
-    return this.client.post("/category", data);
+    return this.post("/category", data);
   }
 
   async deleteCategory(id: number): Promise<any> {
-    return this.client.delete(`/category/${id}`);
+    return this.delete(`/category/${id}`);
   }
 
   async editCategory(id: number, data: any): Promise<any> {
-    return this.client.patch(`/category/${id}`, data);
+    return this.patch(`/category/${id}`, data);
   }
 
   async getListOrigin(): Promise<any> {
-    return this.client.get("/origin");
+    return this.get("/origin");
+  }
+
+  async getOrigin(id: number): Promise<any> {
+    return this.get(`/origin/${id}`);
+  }
+
+  async addOrigin(data: any): Promise<any> {
+    return this.post("/origin", data);
+  }
+
+  async deleteOrigin(id: number): Promise<any> {
+    return this.delete(`/origin/${id}`);
+  }
+
+  async editOrigin(id: number, data: any): Promise<any> {
+    return this.patch(`/origin/${id}`, data);
   }
 
   async getListManufacturer(): Promise<any> {
-    return this.client.get("/manufacturer");
+    return this.get("/manufacturer");
   }
 
+  async getManufacturer(id: number): Promise<any> {
+    return this.get(`/manufacturer/${id}`);
+  }
 
+  async addManufacturer(data: any): Promise<any> {
+    return this.post("/manufacturer", data);
+  }
+
+  async deleteManufacturer(id: number): Promise<any> {
+    return this.delete(`/manufacturer/${id}`);
+  }
+
+  async editManufacturer(id: number, data: any): Promise<any> {
+    return this.patch(`/manufacturer/${id}`, data);
+  }
+}
+
+export async function uploadImage(file: File): Promise<string> {
+  const { data } = await axios.post(process.env.REACT_APP_LAMBDA_URL!, {
+    ext: file.type.split('/')[1]
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  });
+  const newFile = new File([file], data.body.fields.key, { type: file.type });
+  const form = new FormData();
+  Object.keys(data.body.fields).forEach(key => {
+    form.append(key, data.body.fields[key]);
+  })
+  form.append('file', newFile);
+  await axios.post(data.body.url, form);
+
+  return data.body.url + data.body.fields.key;
 }
