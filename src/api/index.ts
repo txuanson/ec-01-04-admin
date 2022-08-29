@@ -3,7 +3,6 @@ import axios, { AxiosInstance } from "axios";
 import Cookies from "js-cookie";
 import { useContext } from "react";
 import { AppContext, ContextType } from "../context";
-import { Buffer } from 'buffer';
 
 let instance: Api;
 
@@ -67,7 +66,7 @@ export class Api {
   }
 
   async login(data: { mEmail: string, mPassword: string }): Promise<any> {
-    return this.client.post("/login", data);
+    return this.client.post("/auth/login-admin", data);
   }
 
   async getListUser(): Promise<any> {

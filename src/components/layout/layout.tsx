@@ -1,7 +1,8 @@
-import { ApartmentOutlined, AppstoreOutlined, GlobalOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
-import { Layout, Menu, MenuProps } from "antd";
-import React, { useState } from "react";
-import { Routes, Route, NavLink } from "react-router-dom";
+import { ApartmentOutlined, AppstoreOutlined, GlobalOutlined, LogoutOutlined, SettingOutlined, UserAddOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Dropdown, Layout, Menu, MenuProps } from "antd";
+import React, { useContext, useState } from "react";
+import { Routes, Route, NavLink, Link } from "react-router-dom";
+import { AppContext, ContextType } from "../../context";
 import { CreateAdmin } from "../../pages/admin";
 import { ListCategory } from "../../pages/category";
 import { ListManufacturer } from "../../pages/manufacturer";
@@ -38,7 +39,24 @@ const menuItems: MenuItem[] = [
 ];
 
 export const LayoutWrapper: React.FC = ({ }) => {
+  const { logout } = useContext<ContextType>(AppContext);
+
   const [collapsed, setCollapsed] = useState(false);
+
+  const menu = <Menu
+    items={[
+      {
+        key: 1,
+        label: <Link to="/create-admin">Create Admin</Link>,
+        icon: <UserAddOutlined />,
+      },
+      {
+        key: 2,
+        icon: <LogoutOutlined />,
+        label: <a onClick={() => logout()}>Logout</a>
+      }
+    ]}
+  />
 
   return <Layout className="min-h-screen">
     <Sider collapsible collapsed={collapsed} onCollapse={value => setCollapsed(value)}>
@@ -46,11 +64,16 @@ export const LayoutWrapper: React.FC = ({ }) => {
       <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={menuItems} />
     </Sider>
     <Layout>
-      <Header className="bg-slate-100 p-0 shadow" />
+      <Header className="bg-slate-100 p-3 shadow flex" >
+        <Dropdown overlay={menu} className="ml-auto">
+          <Avatar icon={<UserOutlined />} size={40}/>
+        </Dropdown>
+      </Header>
       <Content className="m-4">
         <Routes>
+          <Route index element={<ListUser />} />
+          <Route path="/create-admin" element={<CreateAdmin />} />
           <Route path="/origin" element={<ListOrigin />} />
-          <Route path="/user" element={<ListUser />} />
           <Route path="/category" element={<ListCategory />} />
           <Route path="/manufacturer" element={<ListManufacturer />} />
           <Route path="/product" element={<ListProduct />} />
