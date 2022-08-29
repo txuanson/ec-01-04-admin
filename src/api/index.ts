@@ -69,6 +69,10 @@ export class Api {
     return this.client.post("/auth/login-admin", data);
   }
 
+  async createAdmin(data: { mEmail: string, mPassword: string, mName: string }): Promise<any> {
+    return this.post("/auth/register-admin", data);
+  }
+
   async getListUser(): Promise<any> {
     return this.get("/user");
   }
@@ -104,7 +108,7 @@ export class Api {
   async editVariant(productId: number, sku: string, data: any): Promise<any> {
     return this.patch(`/product/${productId}/variant/${sku}`, data);
   }
-  
+
   async deleteVariant(productId: number, sku: string): Promise<any> {
     return this.delete(`/product/${productId}/variant/${sku}`);
   }

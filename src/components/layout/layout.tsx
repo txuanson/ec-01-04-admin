@@ -66,12 +66,12 @@ export const LayoutWrapper: React.FC = ({ }) => {
     <Layout>
       <Header className="bg-slate-100 p-3 shadow flex" >
         <Dropdown overlay={menu} className="ml-auto">
-          <Avatar icon={<UserOutlined />} size={40}/>
+          <Avatar icon={<UserOutlined />} size={40} />
         </Dropdown>
       </Header>
       <Content className="m-4">
         <Routes>
-          <Route index element={<ListUser />} />
+          <Route path="/user" element={<ListUser />} />
           <Route path="/create-admin" element={<CreateAdmin />} />
           <Route path="/origin" element={<ListOrigin />} />
           <Route path="/category" element={<ListCategory />} />
